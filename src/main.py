@@ -15,3 +15,8 @@ class Main:
         for i in range(0, num_monsters):
             m = monster.Monster()
             monsters.append(m)
+            
+        print "You see {0} monsters:".format(len(monsters))
+        
+        for m in monsters:
+            print m
