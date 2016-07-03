@@ -9,18 +9,10 @@ class Main:
     
     def run(self):
         self.print_instructions()
-        
-        num_monsters = int(random.uniform(3, 5))
-        monsters = []
-        for i in range(0, num_monsters):
-            m = monster.Monster()
-            monsters.append(m)
-            
-        print "You see {0} monsters:".format(len(monsters))
-        
-        for m in monsters:
-            print m
-            
+        self.generate_floor()
+        self.input_loop()
+
+    # private            
     def print_instructions(self):
         print "Welcome to Legendary Tribble!"
         print ""
@@ -33,3 +25,20 @@ class Main:
         print "You are on floor B{0}.".format(self.floor_number)
         print ""
     
+    # private 
+    def input_loop(self):
+        print "You see {0} monsters:".format(len(self.monsters))
+        
+        for m in self.monsters:
+            print m
+            
+        raw_input("> ")
+        
+    # private
+    def generate_floor(self):
+        
+        num_monsters = self.floor_number + int(random.uniform(3, 5))
+        self.monsters = []
+        for i in range(0, num_monsters):
+            m = monster.Monster()
+            self.monsters.append(m)
