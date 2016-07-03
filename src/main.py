@@ -1,4 +1,5 @@
 import random
+import sys
 from src import monster
 
 class Main:
@@ -8,6 +9,9 @@ class Main:
         self.floor_number = 1
     
     def run(self):
+        # Hash of input command + callback function
+        self.commands = { 'quit': self.quit }
+        
         self.print_instructions()
         self.generate_floor()
         self.input_loop()
@@ -27,13 +31,21 @@ class Main:
     
     # private 
     def input_loop(self):
-        print "You see {0} monsters:".format(len(self.monsters))
-        
-        for m in self.monsters:
-            print m
+        is_battling = True
+        while is_battling:
+            print "You see {0} monsters:".format(len(self.monsters))
             
-        raw_input("> ")
-        
+            for m in self.monsters:
+                print m
+                
+            input = raw_input("> ").lower()
+            
+            if input in self.commands:
+                self.commands[input]()
+            else:
+                print "{0} isn't a valid command, try one of: {1}".format(input, self.commands.keys())
+            
+            
     # private
     def generate_floor(self):
         
@@ -42,3 +54,8 @@ class Main:
         for i in range(0, num_monsters):
             m = monster.Monster()
             self.monsters.append(m)
+            
+    # private
+    def quit(self):
+        print "Bye!"
+        sys.exit()
