@@ -1,6 +1,7 @@
 import random
 import sys
 from src import monster
+from src import battle
 
 class Main:
     """The main game loop logic. TODO: refactor into better classes"""
@@ -44,7 +45,7 @@ class Main:
             if (space == -1):
                 space = len(input)
             command_name = input[0:space]
-            arguments = input[(space + 1):]
+            arguments = input[space:].strip()
             
             if command_name in self.commands:
                 self.commands[command_name](arguments)
@@ -68,4 +69,16 @@ class Main:
         
     # private
     def fight(self, arguments):
-        pass
+        target_name = arguments
+        targets = [m for m in self.monsters if m.name.lower() == target_name]
+        if len(targets) == 0:
+            print "There doesn't seem to be any '{0}' here to fight".format(target_name)
+        else:
+            target = targets[0] # fight the first such monster
+            is_victory = Battle(target).fight_it_out()
+        
+        if is_victory == True:
+            print "Victory! You vanquished your foe!"
+            targets.remove(target)
+        else:
+            print "You slink back, defeated."
