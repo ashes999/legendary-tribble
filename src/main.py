@@ -10,7 +10,7 @@ class Main:
     
     def run(self):
         # Hash of input command + callback function
-        self.commands = { 'quit': self.quit }
+        self.commands = { 'quit': self.quit, 'fight': self.fight }
         
         self.print_instructions()
         self.generate_floor()
@@ -40,8 +40,14 @@ class Main:
                 
             input = raw_input("> ").lower()
             
-            if input in self.commands:
-                self.commands[input]()
+            space = input.find(' ')
+            if (space == -1):
+                space = len(input)
+            command_name = input[0:space]
+            arguments = input[(space + 1):]
+            
+            if command_name in self.commands:
+                self.commands[command_name](arguments)
             else:
                 print "{0} isn't a valid command, try one of: {1}".format(input, self.commands.keys())
             
@@ -56,6 +62,10 @@ class Main:
             self.monsters.append(m)
             
     # private
-    def quit(self):
+    def quit(self, arguments):
         print "Bye!"
         sys.exit()
+        
+    # private
+    def fight(self, arguments):
+        pass
