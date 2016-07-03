@@ -1,12 +1,14 @@
 import random
 import sys
-from src import monster
 from src import battle
+from src import monster
+from src import player
 
 class Main:
     """The main game loop logic. TODO: refactor into better classes"""
     
     def __init__(self):
+        self.player = player.Player()
         self.floor_number = 1
     
     def run(self):
@@ -33,8 +35,9 @@ class Main:
     # private 
     def input_loop(self):
         is_battling = True
-        while is_battling:
+        while is_battling:            
             print "You see {0} monsters:".format(len(self.monsters))
+            print "Health: {0}/{1}".format(self.player.current_health, self.player.total_health)
             
             for m in self.monsters:
                 print m
@@ -73,12 +76,13 @@ class Main:
         targets = [m for m in self.monsters if m.name.lower() == target_name]
         if len(targets) == 0:
             print "There doesn't seem to be any '{0}' here to fight".format(target_name)
+            return
         else:
             target = targets[0] # fight the first such monster
-            is_victory = Battle(target).fight_it_out()
+            is_victory = battle.Battle(self.player, target).fight_it_out()
         
         if is_victory == True:
             print "Victory! You vanquished your foe!"
-            targets.remove(target)
+            self.monsters.remove(target)
         else:
             print "You slink back, defeated."
