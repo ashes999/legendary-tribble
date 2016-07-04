@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Launches and runs the game
-from tribble import main
+from tribble.main import Main
 
-m = main.Main()
+m = Main()
 m.run()

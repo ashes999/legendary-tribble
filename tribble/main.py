@@ -1,14 +1,15 @@
 import random
 import sys
-from tribble import battle
-from tribble import monster
-from tribble import player
+
+from tribble.battle import Battle
+from tribble.monster import Monster
+from tribble.player import Player
 
 class Main:
     """The main game loop logic. TODO: refactor into better classes"""
     
     def __init__(self):
-        self.player = player.Player()
+        self.player = Player()
         self.floor_number = 1
     
     def run(self):
@@ -62,7 +63,7 @@ class Main:
         num_monsters = self.floor_number + int(random.uniform(3, 5))
         self.monsters = []
         for i in range(0, num_monsters):
-            m = monster.Monster()
+            m = Monster()
             self.monsters.append(m)
             
     # private
@@ -79,7 +80,7 @@ class Main:
             return
         else:
             target = targets[0] # fight the first such monster
-            is_victory = battle.Battle(self.player, target).fight_it_out()
+            is_victory = Battle(self.player, target).fight_it_out()
         
         if is_victory == True:
             print "Victory! You vanquished your foe!"
