@@ -1,8 +1,8 @@
 import random
 import sys
-from src import battle
-from src import monster
-from src import player
+from tribble import battle
+from tribble import monster
+from tribble import player
 
 class Main:
     """The main game loop logic. TODO: refactor into better classes"""
