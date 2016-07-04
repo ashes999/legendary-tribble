@@ -1,4 +1,5 @@
 import math
+import time
 
 class Battle:
     """A fight between the player and a monster."""
@@ -25,7 +26,9 @@ class Battle:
                 self.attack(self.monster, self.player, num_monster_attacks)
                 if self.player.current_health > 0:
                     self.attack(self.player, self.monster, num_player_attacks)
-                    
+              
+            time.sleep(1)
+                  
         if self.player.current_health <= 0:
             return False
         else:
