@@ -28,7 +28,25 @@ class TestBattle:
         b = self.create_battle(player, monster)
         b.fight_it_out()
         
-        assert monster.current_health <=  0 
+        assert monster.current_health <=  0
+        
+    def test_faster_agility_results_in_more_attacks(self):
+        # Both the player and the monster do one damage per turn
+        # agility 3
+        player = Creature(10, 2, 1, 4)
+        # agility 2
+        monster = Creature(10, 2, 1, 1)
+
+        b = self.create_battle(player, monster)
+        b.fight_it_out()
+        
+        # It takes 8 turns for the player to kill the monster.
+        # In that time, if agility is ignored, the monster will
+        # also get eight turns (and the player should have 2 health left).
+        # If the player has more than two health, it means the player
+        # got extra turns over the monster. That's what we want.
+        turns_to_kill = monster.total_health / (player.strength - monster.defense) 
+        assert player.current_health >= 10 - turns_to_kill
         
     ### test helpers ###
         
