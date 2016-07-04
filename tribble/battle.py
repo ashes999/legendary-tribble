@@ -10,42 +10,54 @@ class Battle:
         self.print_function = print_function
         self.delay_function = delay_function
         
+        self.agility_points = { "player": 0, "monster": 0 }
+        
     def fight_it_out(self):
         self.write("You attack the {0}!".format(self.monster.name))
+        ap_per_turn = max(self.player.agility, self.monster.agility)
         
         while self.player.current_health > 0 and self.monster.current_health > 0:
-            self.write("Player: {0}/{1} {2}: {3}/{4}".format(self.player.current_health, self.player.total_health, self.monster.name, self.monster.current_health, self.monster.total_health))
+            self.write("Player: {0}/{1} {2}: {3}/{4}".format(self.player.current_health, self.player.total_health, self.monster.name, self.monster.current_health, self.monster.total_health))                                    
+                        
+            # Increment points until someone gets a turn                                    
+            if self.agility_points["player"] < ap_per_turn and self.agility_points["monster"] < ap_per_turn:
+                player_iterations = (ap_per_turn - self.agility_points["player"]) / self.player.agility
+                monster_iterations = (ap_per_turn - self.agility_points["monster"]) / self.monster.agility
+                iterations = min(player_iterations, monster_iterations)
+                
+                # Rounding error. If you don't like this, use ceil(...) instead of just dividing by agility.
+                if (iterations == 0):
+                    iterations = 1
+                                
+                self.agility_points["player"] += (self.player.agility * iterations)
+                self.agility_points["monster"] += (self.monster.agility * iterations)
             
-            slowest = min(self.player.agility, self.monster.agility)
+            # Just give the player priority. It's simpler than checking for ties and awarding
+            # a turn to the faster unit.
+            if self.agility_points["player"] >= ap_per_turn:
+                attacker = self.player
+                target = self.monster                
+                self.attack(attacker, target)
+                self.agility_points["player"] -= ap_per_turn
             
-            # TODO: care about the remainder and accumulate it towards next round
-            # eg. with agilities 2 and 3, attacks should be: 3, 2, 3, 3, 2
-            num_player_attacks = self.player.agility // slowest
-            num_monster_attacks = self.monster.agility // slowest
-            
-            # TODO: extract this logic into a separate method so we can test it
-            if self.player.agility > self.monster.agility:
-                self.attack(self.player, self.monster, num_player_attacks)
-                if self.monster.current_health > 0:
-                    self.attack(self.monster, self.player, num_monster_attacks)
-            else:                
-                self.attack(self.monster, self.player, num_monster_attacks)
-                if self.player.current_health > 0:
-                    self.attack(self.player, self.monster, num_player_attacks)
-              
-            self.delay_function(1)
+            if self.agility_points["monster"] >= ap_per_turn:
+                attacker = self.monster
+                target = self.player
+                self.attack(attacker, target)
+                self.agility_points["monster"] -= ap_per_turn
+                
+            self.delay_function(0.25)
                   
         if self.player.current_health <= 0:
             return False
         else:
             return True
-            
+    
     # private
-    def attack(self, attacker, target, times):
-        for i in range(times):
-            damage = attacker.strength - target.defense        
-            target.current_health -= damage
-            self.write("{0} attacks {1} for {2} damage!".format(attacker.name, target.name, damage))
+    def attack(self, attacker, target):
+        damage = attacker.strength - target.defense        
+        target.current_health -= damage
+        self.write("{0} attacks {1} for {2} damage!".format(attacker.name, target.name, damage))
             
     def write(self, message):
         if self.print_function == None:
