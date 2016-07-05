@@ -1,5 +1,6 @@
 import unittest
 
+from tests.utils.creature import Creature
 from tribble.battle import Battle
 
 class TestBattle:
@@ -32,10 +33,8 @@ class TestBattle:
         
     def test_faster_agility_results_in_more_attacks(self):
         # Both the player and the monster do one damage per turn
-        # agility 3
-        player = Creature(10, 2, 1, 4)
-        # agility 2
-        monster = Creature(10, 2, 1, 1)
+        player = Creature(10, 2, 1, 4) # fast
+        monster = Creature(10, 2, 1, 1) # slow
 
         b = self.create_battle(player, monster)
         b.fight_it_out()
@@ -58,11 +57,3 @@ class TestBattle:
     def do_nothing(a1 = None, a2 = None):
         pass
     
-class Creature:
-    def __init__(self, health, strength, defense, agility = 1):
-        self.name = 'test creature'
-        self.current_health = self.total_health = health
-        self.strength = strength
-        self.defense = defense
-        self.agility = agility
-        
