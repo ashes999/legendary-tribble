@@ -5,6 +5,7 @@ import time
 from tribble.battle import Battle
 from tribble.monster import Monster
 from tribble.player import Player
+from tribble.room import Room
 
 class Main:
     """The main game loop logic. TODO: refactor into better classes"""
@@ -14,7 +15,6 @@ class Main:
         self.floor_number = 1        
         # Hash of input command + callback function
         self.commands = { 'quit': self.quit, 'fight': self.fight }
-        self.monsters = []
         self.print_function = print_function
         self.delay_function = delay_function
     
@@ -38,11 +38,12 @@ class Main:
     
     # private 
     def input_loop(self):
-        while True:            
-            self.write("You see {0} monsters:".format(len(self.monsters)))
+        while True:
+            self.write("You are in room {0}".format(self.current_room.id + 1))
+            self.write("You see {0} monsters:".format(len(self.current_room.monsters)))
             self.write("Health: {0}/{1}".format(self.player.current_health, self.player.total_health))
             
-            for m in self.monsters:
+            for m in self.current_room.monsters:
                 self.write(m)
                 
             input = raw_input("> ").lower()
@@ -60,15 +61,38 @@ class Main:
         if command_name in self.commands:
             self.commands[command_name](arguments)
         else:
-            self.write("{0} isn't a valid command, try one of: {1}".format(input, self.commands.keys()))
+            self.write("\"{0}\" isn't a valid command, try one of: {1}".format(command_name, self.commands.keys()))
             
     # private
     def generate_floor(self):
-        self.monsters = []
-        num_monsters = self.floor_number + int(random.uniform(3, 5))
-        for i in range(0, num_monsters):
-            m = Monster()
-            self.monsters.append(m)
+        Room.next_id = 1
+        self.generate_rooms()
+        self.connect_rooms()
+        self.current_room = random.choice(self.rooms)
+    
+    # private
+    def generate_rooms(self):
+        self.rooms = []
+        num_rooms = random.randint(8, 16)        
+        for i in range(0, num_rooms):
+            r = Room()
+            self.rooms.append(r)
+            
+    def connect_rooms(self):
+        # Connect each room to one other room, in random order
+        connect_me = random.sample(self.rooms, len(self.rooms))
+        random.shuffle(connect_me)
+        for i in range(0, len(connect_me) - 1):
+            room = connect_me[i]
+            connect_to = connect_me[i + 1]
+            room.connect_to(connect_to)
+            
+        # For each room, connect to 1-2 other rooms.
+        for room in self.rooms:
+            num_targets = random.randint(1, 2)
+            for i in range(num_targets):
+                target = random.sample(self.rooms, 1)[0]
+                room.connect_to(target)
             
     # private
     def quit(self, arguments):

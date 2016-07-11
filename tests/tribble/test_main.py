@@ -23,13 +23,13 @@ class TestMain:
         m.process_command("hi", "")
         assert logger.messages.find("isn't a valid command") > -1
         
-    def test_generate_floor_generates_at_least_N_monsters_for_floor_N(self):
+    def test_generate_monsters_generates_at_least_N_monsters_for_floor_N(self):
         m = Main()
-        m.generate_floor()
+        m.generate_monsters()
         assert len(m.monsters) >= 1
         
         m.floor_number = 10
-        m.generate_floor()
+        m.generate_monsters()
         assert len(m.monsters) >= 10
         
     def test_fight_prints_error_if_monster_doesnt_exist(self):
