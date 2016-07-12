@@ -17,8 +17,7 @@ class Battle:
         ap_per_turn = max(self.player.agility, self.monster.agility)
         
         while self.player.current_health > 0 and self.monster.current_health > 0:
-            self.write("Player: {0}/{1} {2}: {3}/{4}".format(self.player.current_health, self.player.total_health, self.monster.name, self.monster.current_health, self.monster.total_health))                                    
-                        
+
             # Increment points until someone gets a turn                                    
             if self.agility_points["player"] < ap_per_turn and self.agility_points["monster"] < ap_per_turn:
                 player_iterations = (ap_per_turn - self.agility_points["player"]) / self.player.agility
@@ -45,6 +44,7 @@ class Battle:
                 target = self.player
                 self.attack(attacker, target)
                 self.agility_points["monster"] -= ap_per_turn
+                self.write("Player: {0}/{1} {2}: {3}/{4}".format(self.player.current_health, self.player.total_health, self.monster.name, self.monster.current_health, self.monster.total_health))                                    
                 
             self.delay_function(0.25)
                   

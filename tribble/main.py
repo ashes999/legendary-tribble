@@ -1,18 +1,17 @@
-import random
 import sys
 import time
 
 from tribble.battle import Battle
+from tribble.dungeon import Dungeon
 from tribble.monster import Monster
 from tribble.player import Player
-from tribble.room import Room
 
 class Main:
     """The main game loop logic. TODO: refactor into better classes"""
     
     def __init__(self, print_function = None, delay_function = time.sleep):
         self.player = Player()
-        self.floor_number = 1        
+        self.dungeon = Dungeon()
         # Hash of input command + callback function
         self.commands = { 'quit': self.quit, 'fight': self.fight }
         self.print_function = print_function
@@ -20,7 +19,6 @@ class Main:
     
     def run(self):
         self.print_instructions()
-        self.generate_floor()
         self.input_loop()
 
     # private            
@@ -33,17 +31,17 @@ class Main:
         self.write("If you want to go back up one floor, type 'ascend'.")
         self.write("")
         
-        self.write("You are on floor B{0}.".format(self.floor_number))
+        self.write("You are on floor B{0}.".format(self.dungeon.floor_number))
         self.write("")
     
     # private 
     def input_loop(self):
         while True:
-            self.write("You are in room {0}".format(self.current_room.id + 1))
-            self.write("You see {0} monsters:".format(len(self.current_room.monsters)))
+            self.write("You are in room {0}".format(self.dungeon.current_room.id + 1))
+            self.write("You see {0} monsters:".format(len(self.dungeon.current_room.monsters)))
             self.write("Health: {0}/{1}".format(self.player.current_health, self.player.total_health))
             
-            for m in self.current_room.monsters:
+            for m in self.dungeon.current_room.monsters:
                 self.write(m)
                 
             input = raw_input("> ").lower()
@@ -62,38 +60,7 @@ class Main:
             self.commands[command_name](arguments)
         else:
             self.write("\"{0}\" isn't a valid command, try one of: {1}".format(command_name, self.commands.keys()))
-            
-    # private
-    def generate_floor(self):
-        Room.next_id = 1
-        self.generate_rooms()
-        self.connect_rooms()
-        self.current_room = random.choice(self.rooms)
-    
-    # private
-    def generate_rooms(self):
-        self.rooms = []
-        num_rooms = random.randint(8, 16)        
-        for i in range(0, num_rooms):
-            r = Room()
-            self.rooms.append(r)
-            
-    def connect_rooms(self):
-        # Connect each room to one other room, in random order
-        connect_me = random.sample(self.rooms, len(self.rooms))
-        random.shuffle(connect_me)
-        for i in range(0, len(connect_me) - 1):
-            room = connect_me[i]
-            connect_to = connect_me[i + 1]
-            room.connect_to(connect_to)
-            
-        # For each room, connect to 1-2 other rooms.
-        for room in self.rooms:
-            num_targets = random.randint(1, 2)
-            for i in range(num_targets):
-                target = random.sample(self.rooms, 1)[0]
-                room.connect_to(target)
-            
+                
     # private
     def quit(self, arguments):
         self.write("Bye!")
@@ -102,7 +69,7 @@ class Main:
     # private
     def fight(self, arguments):
         target_name = arguments
-        targets = [m for m in self.monsters if m.name.lower().find(target_name) > -1]
+        targets = [m for m in self.dungeon.current_room.monsters if m.name.lower().find(target_name) > -1]
         if len(targets) == 0:
             self.write("There doesn't seem to be any '{0}' here to fight".format(target_name))
             return
@@ -113,7 +80,7 @@ class Main:
         
         if is_victory == True:
             self.write("Victory! You vanquished your foe!")
-            self.monsters.remove(target)
+            self.dungeon.current_room.monsters.remove(target)
         else:
             self.write("You slink back, defeated.")
             
