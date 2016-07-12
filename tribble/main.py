@@ -37,7 +37,10 @@ class Main:
     # private 
     def input_loop(self):
         while True:
-            self.write("You are in room {0}".format(self.dungeon.current_room.id + 1))
+            self.write("You are in room {0}. You can go:".format(self.dungeon.current_room.id + 1))
+            self.dungeon.current_room.print_exits(self.write)
+            self.write("")
+            
             self.write("You see {0} monsters:".format(len(self.dungeon.current_room.monsters)))
             self.write("Health: {0}/{1}".format(self.player.current_health, self.player.total_health))
             

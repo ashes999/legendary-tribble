@@ -6,6 +6,19 @@ class Room:
     
     next_id = 0
     valid_directions = ['NORTH', 'SOUTH', 'EAST', 'WEST']
+            
+    @staticmethod      
+    def reverse(direction):
+        if direction == "NORTH":
+            return "SOUTH"
+        elif direction == "SOUTH": 
+            return "NORTH"
+        elif direction == "WEST":
+            return "EAST"
+        elif direction == "EAST":
+            return "WEST"
+        else:
+            raise(Exception("Not sure how to reverse direction {0}".format(direction)))
     
     def __init__(self):
         self.id = Room.next_id
@@ -26,8 +39,12 @@ class Room:
                 self.connections[direction] = target
                 target.connections[Room.reverse(direction)] = self
                 print("Room {0}: go {1} to room {2} ({3})".format(self.id, direction, target.id, Room.reverse(direction)))
+            
+    def print_exits(self, print_function):
+        for direction in self.connections.keys():
+            print_function("    {0} to room {1}".format(direction, self.connections[direction].id))
         
-    # private
+     # private
     def generate_monsters(self):
         self.monsters = []
         has_monsters = random.randint(1, 100) <= 50
@@ -37,16 +54,3 @@ class Room:
             for i in range(0, num_monsters):
                 m = Monster()
                 self.monsters.append(m) 
-            
-    @staticmethod      
-    def reverse(direction):
-        if direction == "NORTH":
-            return "SOUTH"
-        elif direction == "SOUTH": 
-            return "NORTH"
-        elif direction == "WEST":
-            return "EAST"
-        elif direction == "EAST":
-            return "WEST"
-        else:
-            raise(Exception("Not sure how to reverse direction {0}".format(direction)))
