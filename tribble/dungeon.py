@@ -49,6 +49,24 @@ class Dungeon:
             stairs_up = all_rooms[-1]
             stairs_up.features.append("stairs up")
             
+    def descend(self, arguments):
+        if self.current_room.features.__contains__('stairs down'):
+            self.print_function("You descend to the next floor.")
+            self.floor_number += 1
+            self.generate_floor()
+            self.print_floor_number()            
+        else:
+            self.print_function("There are no stairs downward here.")
+            
+            
+    def ascend(self, arguments):
+        if self.current_room.features.__contains__('stairs up'):
+            self.print_function("You ascend to the previous floor.")
+            self.floor_number -= 1
+            self.generate_floor()
+            self.print_floor_number()
+        else:
+            self.print_function("There are no stairs upward here.")
             
     def move_west(self, arguments):
         self.move("WEST")
@@ -69,4 +87,6 @@ class Dungeon:
         else:
             self.print_function("There isn't any exit to the {0}.".format(direction)) 
            
-            
+    def print_floor_number(self):
+        self.print_function("You are on floor B{0}.".format(self.floor_number))
+        self.print_function("")

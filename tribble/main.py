@@ -14,8 +14,8 @@ class Main:
         self.dungeon = Dungeon(self.write)
         # Hash of input command + callback function
         self.commands = { 'quit': self.quit, 'fight': self.fight, 'w': self.dungeon.move_west,
-            'e': self.dungeon.move_east, 'n': self.dungeon.move_north,
-            's': self.dungeon.move_south
+            'e': self.dungeon.move_east, 'n': self.dungeon.move_north, 's': self.dungeon.move_south,
+            'descend': self.dungeon.descend, 'ascend': self.dungeon.ascend
         }
         self.print_function = print_function
         self.delay_function = delay_function
@@ -32,13 +32,12 @@ class Main:
         self.write("Instructions: type 'fight <name>' to fight a monster.")
         self.write("Kill all the monsters, then, type 'descend' to go to the next floor")
         self.write("If you want to go back up one floor, type 'ascend'.")
-        self.write("")
-        
-        self.write("You are on floor B{0}.".format(self.dungeon.floor_number))
-        self.write("")
+        self.write("")                
     
     # private 
     def input_loop(self):
+        self.dungeon.print_floor_number
+        
         while True:
             self.write("You are in room {0}. You can go:".format(self.dungeon.current_room.id))
             self.dungeon.current_room.print_exits(self.write)
@@ -60,6 +59,8 @@ class Main:
             arguments = input[space:].strip()
             
             self.process_command(command_name, arguments)
+            
+            self.write("")
             
     # private
     def process_command(self, command_name, arguments):
