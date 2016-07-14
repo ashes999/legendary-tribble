@@ -17,7 +17,7 @@ class Dungeon:
     # private
     def generate_rooms(self):
         self.rooms = []
-        num_rooms = random.randint(8, 16)        
+        num_rooms = random.randint(5, 10)        
         for i in range(0, num_rooms):
             r = Room()
             self.rooms.append(r)
