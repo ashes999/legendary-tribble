@@ -6,6 +6,7 @@ class Room:
     
     next_id = 0
     valid_directions = ['NORTH', 'SOUTH', 'EAST', 'WEST']
+    valid_features = ['stairs down', 'stairs up']
             
     @staticmethod      
     def reverse(direction):
@@ -26,6 +27,7 @@ class Room:
         self.generate_monsters()
         # direction => target
         self.connections = {}
+        self.features = []
         
     def connect_to(self, target):
         if target == self or target in self.connections.values():
@@ -38,11 +40,14 @@ class Room:
                 direction = random.sample(valid_directions, 1)[0]
                 self.connections[direction] = target
                 target.connections[Room.reverse(direction)] = self
-                print("Room {0}: go {1} to room {2} ({3})".format(self.id, direction, target.id, Room.reverse(direction)))
             
     def print_exits(self, print_function):
         for direction in self.connections.keys():
             print_function("    {0} to room {1}".format(direction, self.connections[direction].id))
+        
+    def print_features(self, print_function):
+        for feature in self.features:
+            print_function("You see {0} here.".format(feature))
         
      # private
     def generate_monsters(self):

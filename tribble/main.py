@@ -42,6 +42,7 @@ class Main:
         while True:
             self.write("You are in room {0}. You can go:".format(self.dungeon.current_room.id))
             self.dungeon.current_room.print_exits(self.write)
+            self.dungeon.current_room.print_features(self.write)
             self.write("")
             
             self.write("You see {0} monsters:".format(len(self.dungeon.current_room.monsters)))

@@ -13,6 +13,7 @@ class Dungeon:
         self.generate_rooms()
         self.connect_rooms()
         self.current_room = random.choice(self.rooms)
+        self.generate_stairs()       
     
     # private
     def generate_rooms(self):
@@ -38,6 +39,17 @@ class Dungeon:
                 target = random.sample(self.rooms, 1)[0]
                 room.connect_to(target)
     
+    def generate_stairs(self):
+        all_rooms = random.sample(self.rooms, len(self.rooms))
+        
+        stairs_down = all_rooms[0]
+        stairs_down.features.append("stairs down")
+        
+        if self.floor_number > 1:
+            stairs_up = all_rooms[-1]
+            stairs_up.features.append("stairs up")
+            
+            
     def move_west(self, arguments):
         self.move("WEST")
         
