@@ -2,7 +2,8 @@ import random
 from tribble.room import Room
 
 class Dungeon:
-    def __init__(self):
+    def __init__(self, print_function):
+        self.print_function = print_function
         self.floor_number = 1
         self.generate_floor()
 
@@ -36,3 +37,24 @@ class Dungeon:
             for i in range(num_targets):
                 target = random.sample(self.rooms, 1)[0]
                 room.connect_to(target)
+    
+    def move_west(self, arguments):
+        self.move("WEST")
+        
+    def move_east(self, arguments):
+        self.move("EAST")
+        
+    def move_north(self, arguments):
+        self.move("NORTH")
+        
+    def move_south(self, arguments):
+        self.move("SOUTH")
+       
+    def move(self, direction):
+        if self.current_room.connections.has_key(direction):
+            self.current_room = self.current_room.connections[direction]
+            self.print_function("You move {0}".format(direction))
+        else:
+            self.print_function("There isn't any exit to the {0}.".format(direction)) 
+           
+            

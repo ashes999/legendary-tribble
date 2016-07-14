@@ -11,9 +11,12 @@ class Main:
     
     def __init__(self, print_function = None, delay_function = time.sleep):
         self.player = Player()
-        self.dungeon = Dungeon()
+        self.dungeon = Dungeon(self.write)
         # Hash of input command + callback function
-        self.commands = { 'quit': self.quit, 'fight': self.fight }
+        self.commands = { 'quit': self.quit, 'fight': self.fight, 'w': self.dungeon.move_west,
+            'e': self.dungeon.move_east, 'n': self.dungeon.move_north,
+            's': self.dungeon.move_south
+        }
         self.print_function = print_function
         self.delay_function = delay_function
     
@@ -37,7 +40,7 @@ class Main:
     # private 
     def input_loop(self):
         while True:
-            self.write("You are in room {0}. You can go:".format(self.dungeon.current_room.id + 1))
+            self.write("You are in room {0}. You can go:".format(self.dungeon.current_room.id))
             self.dungeon.current_room.print_exits(self.write)
             self.write("")
             
